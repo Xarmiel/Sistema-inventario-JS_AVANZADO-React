@@ -1,69 +1,45 @@
+import api from './api';
 import type { Producto, NuevoProducto } from '../types/Producto';
 
-const API_URL = 'http://localhost:3001/productos';
+const ENDPOINT = '/productos';
 
 export const getProductos = async (): Promise<Producto[]> => {
-  const response = await fetch(API_URL);
-  if (!response.ok) {
-    throw new Error('Error al obtener la lista de productos');
-  }
-  return response.json();
+  const { data } = await api.get<Producto[]>(ENDPOINT);
+  return data;
 };
 
 export const getProductoById = async (id: number): Promise<Producto> => {
-  const response = await fetch(`${API_URL}/${id}`);
-  if (!response.ok) {
-    throw new Error(`Producto con ID ${id} no encontrado`);
-  }
-  return response.json();
+  const { data } = await api.get<Producto>(`${ENDPOINT}/${id}`);
+  return data;
 };
 
 export const crearProducto = async (producto: NuevoProducto): Promise<Producto> => {
-  // Obtener todos para calcular el siguiente ID numérico autoincremental
-  const todos = await getProductos();
+  // Obtener lista para calcular el ID autoincremental de manera segura
+  const { data: todos } = await api.get<Producto[]>(ENDPOINT);
   const maxId = todos.reduce((max, p) => (Number(p.id) > max ? Number(p.id) : max), 0);
   const nuevoId = maxId + 1;
 
-  const response = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      ...producto,
-      id: nuevoId,
-      stock: Number(producto.stock),
-      precio: Number(producto.precio)
-    })
+  const { data } = await api.post<Producto>(ENDPOINT, {
+    ...producto,
+    id: nuevoId,
+    stock: Number(producto.stock),
+    precio: Number(producto.precio)
   });
 
-  if (!response.ok) {
-    throw new Error('Error al registrar el producto');
-  }
-  return response.json();
+  return data;
 };
 
 export const actualizarProducto = async (id: number, datos: Partial<Producto>): Promise<Producto> => {
-  const response = await fetch(`${API_URL}/${id}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      ...datos,
-      ...(datos.stock !== undefined ? { stock: Number(datos.stock) } : {}),
-      ...(datos.precio !== undefined ? { precio: Number(datos.precio) } : {})
-    })
-  });
+  const payload = {
+    ...datos,
+    ...(datos.stock !== undefined ? { stock: Number(datos.stock) } : {}),
+    ...(datos.precio !== undefined ? { precio: Number(datos.precio) } : {})
+  };
 
-  if (!response.ok) {
-    throw new Error(`Error al actualizar el producto con ID ${id}`);
-  }
-  return response.json();
+  const { data } = await api.patch<Producto>(`${ENDPOINT}/${id}`, payload);
+  return data;
 };
 
 export const eliminarProducto = async (id: number): Promise<void> => {
-  const response = await fetch(`${API_URL}/${id}`, {
-    method: 'DELETE'
-  });
-
-  if (!response.ok) {
-    throw new Error(`Error al eliminar el producto con ID ${id}`);
-  }
+  await api.delete(`${ENDPOINT}/${id}`);
 };
