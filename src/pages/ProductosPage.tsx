@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import type { Producto } from '../types/Producto';
 import { getProductos, eliminarProducto } from '../services/productoService';
@@ -10,6 +10,9 @@ export const ProductosPage: React.FC = () => {
   const [filtroTexto, setFiltroTexto] = useState<string>('');
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string>('TODAS');
   const [mensaje, setMensaje] = useState<{ tipo: 'success' | 'danger'; texto: string } | null>(null);
+
+  // useRef para manipular el foco del buscador directamente sin re-render (Semana 13)
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const cargarProductos = async () => {
     try {
@@ -31,6 +34,16 @@ export const ProductosPage: React.FC = () => {
     cargarProductos();
   }, []);
 
+  const handleFocusSearch = () => {
+    searchInputRef.current?.focus();
+  };
+
+  const handleLimpiarFiltro = () => {
+    setFiltroTexto('');
+    setCategoriaSeleccionada('TODAS');
+    searchInputRef.current?.focus();
+  };
+
   const handleEliminar = async (id: number, nombre: string) => {
     const confirmado = window.confirm(`¿Estás seguro de eliminar el producto "${nombre}" (ID: ${id})?`);
     if (!confirmado) return;
@@ -51,9 +64,10 @@ export const ProductosPage: React.FC = () => {
   const categorias = ['TODAS', ...Array.from(new Set(productos.map(p => p.categoria)))];
 
   const productosFiltrados = productos.filter(p => {
-    const coincideNombre = p.nombre.toLowerCase().includes(filtroTexto.toLowerCase()) ||
-                           p.categoria.toLowerCase().includes(filtroTexto.toLowerCase()) ||
-                           String(p.id).includes(filtroTexto);
+    const coincideNombre =
+      p.nombre.toLowerCase().includes(filtroTexto.toLowerCase()) ||
+      p.categoria.toLowerCase().includes(filtroTexto.toLowerCase()) ||
+      String(p.id).includes(filtroTexto);
     const coincideCategoria = categoriaSeleccionada === 'TODAS' || p.categoria === categoriaSeleccionada;
     return coincideNombre && coincideCategoria;
   });
@@ -63,11 +77,22 @@ export const ProductosPage: React.FC = () => {
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
         <div>
           <h2 className="fw-bold mb-1">Catálogo de Productos</h2>
-          <p className="text-muted mb-0">Gestión de stock, precios y categorías</p>
+          <p className="text-muted mb-0">Gestión de stock, precios y categorías vía Axios HTTP</p>
         </div>
-        <Link to="/productos/nuevo" className="btn btn-primary d-inline-flex align-items-center gap-2">
-          <i className="bi bi-plus-circle-fill"></i> Registrar Producto
-        </Link>
+        <div className="d-flex gap-2">
+          {/* Botón con useRef (S13): Enfocar el buscador */}
+          <button
+            type="button"
+            className="btn btn-outline-secondary d-inline-flex align-items-center gap-2"
+            onClick={handleFocusSearch}
+            title="Colocar el cursor en el buscador"
+          >
+            <i className="bi bi-cursor-fill"></i> Ir al Buscador
+          </button>
+          <Link to="/productos/nuevo" className="btn btn-primary d-inline-flex align-items-center gap-2">
+            <i className="bi bi-plus-circle-fill"></i> Registrar Producto
+          </Link>
+        </div>
       </div>
 
       {mensaje && (
@@ -80,22 +105,35 @@ export const ProductosPage: React.FC = () => {
       {/* Barra de filtros */}
       <div className="card shadow-sm border-0 mb-4">
         <div className="card-body">
-          <div className="row g-3">
-            <div className="col-md-8">
+          <div className="row g-3 align-items-center">
+            <div className="col-md-7">
               <div className="input-group">
                 <span className="input-group-text bg-light border-end-0">
                   <i className="bi bi-search text-muted"></i>
                 </span>
                 <input
+                  ref={searchInputRef}
                   type="text"
                   className="form-control border-start-0"
                   placeholder="Buscar por ID, nombre o categoría..."
                   value={filtroTexto}
                   onChange={e => setFiltroTexto(e.target.value)}
                 />
+                {filtroTexto && (
+                  <button
+                    className="btn btn-outline-secondary border-start-0"
+                    type="button"
+                    onClick={() => {
+                      setFiltroTexto('');
+                      searchInputRef.current?.focus();
+                    }}
+                  >
+                    <i className="bi bi-x-lg"></i>
+                  </button>
+                )}
               </div>
             </div>
-            <div className="col-md-4">
+            <div className="col-md-3">
               <select
                 className="form-select"
                 value={categoriaSeleccionada}
@@ -108,6 +146,16 @@ export const ProductosPage: React.FC = () => {
                 ))}
               </select>
             </div>
+            <div className="col-md-2 d-grid">
+              <button
+                type="button"
+                className="btn btn-outline-secondary"
+                onClick={handleLimpiarFiltro}
+                title="Restablecer filtros"
+              >
+                Limpiar
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -118,7 +166,7 @@ export const ProductosPage: React.FC = () => {
           {cargando ? (
             <div className="text-center py-5">
               <div className="spinner-border text-primary" role="status"></div>
-              <p className="mt-2 text-muted">Cargando catálogo...</p>
+              <p className="mt-2 text-muted">Cargando catálogo con Axios...</p>
             </div>
           ) : productosFiltrados.length === 0 ? (
             <div className="text-center py-5">
@@ -143,17 +191,17 @@ export const ProductosPage: React.FC = () => {
                     <tr key={p.id}>
                       <td className="fw-bold text-muted">#{p.id}</td>
                       <td>
-                        <span className="fw-semibold text-dark">{p.nombre}</span>
+                        <span className="fw-semibold">{p.nombre}</span>
                       </td>
                       <td>
-                        <span className="badge bg-secondary-subtle text-dark border">
+                        <span className="badge bg-secondary-subtle text-body border">
                           {p.categoria}
                         </span>
                       </td>
                       <td>
                         <StockBadge stock={p.stock} />
                       </td>
-                      <td className="fw-bold text-dark">
+                      <td className="fw-bold">
                         S/ {Number(p.precio).toFixed(2)}
                       </td>
                       <td className="text-end">
