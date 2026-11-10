@@ -4,6 +4,7 @@ import type { Producto } from '../types/Producto';
 import type { Movimiento } from '../types/Movimiento';
 import { getProductos } from '../services/productoService';
 import { getMovimientos } from '../services/movimientoService';
+import { PoliticasSection } from '../components/PoliticasSection';
 
 export const DashboardPage: React.FC = () => {
   const [productos, setProductos] = useState<Producto[]>([]);
@@ -58,7 +59,7 @@ export const DashboardPage: React.FC = () => {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h2 className="fw-bold mb-1">Panel de Control (Dashboard)</h2>
-          <p className="text-muted mb-0">Resumen y estado global del inventario</p>
+          <p className="text-muted mb-0">Resumen y estado global del inventario con Axios y React 19</p>
         </div>
         <div className="d-flex gap-2">
           <Link to="/productos/nuevo" className="btn btn-primary">
@@ -69,6 +70,9 @@ export const DashboardPage: React.FC = () => {
           </Link>
         </div>
       </div>
+
+      {/* Panel de políticas y SLA cargado como Recurso con use(resource) y Suspense (S13) */}
+      <PoliticasSection />
 
       {/* Tarjetas de métricas */}
       <div className="row g-3 mb-4">
@@ -117,7 +121,7 @@ export const DashboardPage: React.FC = () => {
         {/* Últimos movimientos */}
         <div className="col-lg-7">
           <div className="card shadow-sm border-0 h-100">
-            <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <div className="card-header bg-transparent py-3 d-flex justify-content-between align-items-center">
               <h5 className="mb-0 fw-bold">Últimos Movimientos</h5>
               <Link to="/movimientos" className="text-decoration-none small">
                 Ver todos <i className="bi bi-chevron-right"></i>
@@ -170,7 +174,7 @@ export const DashboardPage: React.FC = () => {
         {/* Artículos en riesgo */}
         <div className="col-lg-5">
           <div className="card shadow-sm border-0 h-100">
-            <div className="card-header bg-white py-3">
+            <div className="card-header bg-transparent py-3">
               <h5 className="mb-0 fw-bold text-danger">
                 <i className="bi bi-exclamation-octagon me-2"></i>Stock Crítico
               </h5>
@@ -181,7 +185,7 @@ export const DashboardPage: React.FC = () => {
               ) : (
                 <ul className="list-group list-group-flush">
                   {productosBajoStock.map(p => (
-                    <li key={p.id} className="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <li key={p.id} className="list-group-item d-flex justify-content-between align-items-center px-0 bg-transparent">
                       <div>
                         <div className="fw-medium">{p.nombre}</div>
                         <small className="text-muted">{p.categoria}</small>
