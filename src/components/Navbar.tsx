@@ -1,7 +1,10 @@
 import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 
 export const Navbar: React.FC = () => {
+  const { theme, toggleTheme } = useTheme();
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
       <div className="container">
@@ -51,6 +54,27 @@ export const Navbar: React.FC = () => {
               <Link to="/movimientos/nuevo" className="btn btn-warning btn-sm fw-semibold text-dark">
                 <i className="bi bi-plus-circle me-1"></i> Registrar Movimiento
               </Link>
+            </li>
+            {/* Control de Tema con Context (Semana 13) */}
+            <li className="nav-item ms-lg-2 mt-2 mt-lg-0">
+              <button
+                type="button"
+                className="btn btn-outline-light btn-sm d-flex align-items-center gap-1"
+                onClick={toggleTheme}
+                title={`Cambiar a modo ${theme === 'light' ? 'oscuro' : 'claro'}`}
+              >
+                {theme === 'dark' ? (
+                  <>
+                    <i className="bi bi-sun-fill text-warning"></i>
+                    <span className="small">Claro</span>
+                  </>
+                ) : (
+                  <>
+                    <i className="bi bi-moon-stars-fill text-info"></i>
+                    <span className="small">Oscuro</span>
+                  </>
+                )}
+              </button>
             </li>
           </ul>
         </div>
