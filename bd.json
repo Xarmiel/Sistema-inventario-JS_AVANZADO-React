@@ -1,37 +1,44 @@
 {
   "productos": [
     {
-      "id": 1,
+      "id": "1",
       "nombre": "Laptop Pro 14\"",
       "categoria": "Electrónica",
       "stock": 15,
-      "precio": 3299.00
+      "precio": 3299
     },
     {
-      "id": 2,
+      "id": "2",
       "nombre": "Monitor Gamer 27\" QHD",
       "categoria": "Monitores",
       "stock": 8,
-      "precio": 1150.50
+      "precio": 1150.5
     },
     {
-      "id": 3,
+      "id": "3",
       "nombre": "Teclado Mecánico RGB",
       "categoria": "Periféricos",
       "stock": 25,
-      "precio": 249.90
+      "precio": 249.9
     },
     {
-      "id": 4,
+      "id": "4",
       "nombre": "Mouse Inalámbrico Ergonómico",
       "categoria": "Periféricos",
       "stock": 3,
-      "precio": 120.00
+      "precio": 120
+    },
+    {
+      "nombre": "Test",
+      "categoria": "Test",
+      "stock": 2,
+      "precio": 1,
+      "id": "8lCL5zunW8U"
     }
   ],
   "movimientos": [
     {
-      "id": 1,
+      "id": "1",
       "productoId": 1,
       "productoNombre": "Laptop Pro 14\"",
       "tipo": "ENTRADA",
@@ -40,7 +47,7 @@
       "motivo": "Inventario inicial (Automático)"
     },
     {
-      "id": 2,
+      "id": "2",
       "productoId": 2,
       "productoNombre": "Monitor Gamer 27\" QHD",
       "tipo": "ENTRADA",
@@ -49,7 +56,7 @@
       "motivo": "Inventario inicial (Automático)"
     },
     {
-      "id": 3,
+      "id": "3",
       "productoId": 3,
       "productoNombre": "Teclado Mecánico RGB",
       "tipo": "ENTRADA",
@@ -58,13 +65,23 @@
       "motivo": "Inventario inicial (Automático)"
     },
     {
-      "id": 4,
+      "id": "4",
       "productoId": 4,
       "productoNombre": "Mouse Inalámbrico Ergonómico",
       "tipo": "ENTRADA",
       "cantidad": 3,
       "fecha": "2026-11-01 10:15:00",
       "motivo": "Inventario inicial (Automático)"
+    },
+    {
+      "productoId": "8lCL5zunW8U",
+      "productoNombre": "Test",
+      "tipo": "ENTRADA",
+      "cantidad": 2,
+      "fecha": "2026-11-10 01:28:37",
+      "motivo": "Registro inicial de producto (Automático)",
+      "id": "GPRAevC_G1E"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
