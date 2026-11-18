@@ -14,7 +14,6 @@ export const ProductosPage: React.FC = () => {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string>('TODAS');
   const [mensaje, setMensaje] = useState<{ tipo: 'success' | 'danger'; texto: string } | null>(null);
 
-  // useRef para manipular el foco del buscador directamente sin re-render (Semana 13)
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const handleFocusSearch = () => {
@@ -63,7 +62,6 @@ export const ProductosPage: React.FC = () => {
           <p className="text-muted mb-0">Gestión de stock, precios y categorías vía Axios HTTP</p>
         </div>
         <div className="d-flex gap-2">
-          {/* Botón con useRef (S13): Enfocar el buscador */}
           <button
             type="button"
             className="btn btn-outline-secondary d-inline-flex align-items-center gap-2"
@@ -87,7 +85,6 @@ export const ProductosPage: React.FC = () => {
         </div>
       )}
 
-      {/* Barra de filtros */}
       <div className="card shadow-sm border-0 mb-4">
         <div className="card-body">
           <div className="row g-3 align-items-center">
@@ -145,7 +142,6 @@ export const ProductosPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Tabla de Productos */}
       <div className="card shadow-sm border-0">
         <div className="card-body p-0">
           {cargando ? (

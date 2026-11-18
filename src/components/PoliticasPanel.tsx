@@ -2,7 +2,6 @@ import React, { use } from 'react';
 import { politicasPromise, type PoliticaInventario } from '../resources/politicasResource';
 
 export const PoliticasPanel: React.FC = () => {
-  // Uso de use(resource) introducido en React 19 para lectura declarativa bajo Suspense (S13)
   const politicas: PoliticaInventario[] = use(politicasPromise);
 
   return (

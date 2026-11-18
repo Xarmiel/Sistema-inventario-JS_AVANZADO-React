@@ -14,7 +14,6 @@ export const getProductoById = async (id: number): Promise<Producto> => {
 };
 
 export const crearProducto = async (producto: NuevoProducto): Promise<Producto> => {
-  // Obtener lista para calcular el ID autoincremental de manera segura
   const { data: todos } = await api.get<Producto[]>(ENDPOINT);
   const maxId = todos.reduce((max, p) => (Number(p.id) > max ? Number(p.id) : max), 0);
   const nuevoId = maxId + 1;

@@ -55,7 +55,6 @@ export const Navbar: React.FC = () => {
                 <i className="bi bi-plus-circle me-1"></i> Registrar Movimiento
               </Link>
             </li>
-            {/* Control de Tema con Context (Semana 13) */}
             <li className="nav-item ms-lg-2 mt-2 mt-lg-0">
               <button
                 type="button"

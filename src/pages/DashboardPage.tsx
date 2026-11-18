@@ -52,10 +52,8 @@ export const DashboardPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Panel de políticas y SLA cargado como Recurso con use(resource) y Suspense (S13) */}
       <PoliticasSection />
 
-      {/* Tarjetas de métricas */}
       <div className="row g-3 mb-4">
         <div className="col-12 col-sm-6 col-lg-3">
           <div className="card shadow-sm border-0 border-start border-primary border-4 h-100">
@@ -99,7 +97,6 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       <div className="row g-4">
-        {/* Últimos movimientos */}
         <div className="col-lg-7">
           <div className="card shadow-sm border-0 h-100">
             <div className="card-header bg-transparent py-3 d-flex justify-content-between align-items-center">
@@ -144,7 +141,6 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Artículos en riesgo */}
         <div className="col-lg-5">
           <div className="card shadow-sm border-0 h-100">
             <div className="card-header bg-transparent py-3">

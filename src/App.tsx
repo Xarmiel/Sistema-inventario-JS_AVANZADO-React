@@ -30,7 +30,6 @@ export const App: React.FC = () => {
               <Route path="/productos/editar/:id" element={<ProductoFormPage />} />
               <Route path="/movimientos" element={<MovimientosPage />} />
               <Route path="/movimientos/nuevo" element={<MovimientoFormPage />} />
-              {/* S15: una ruta rota se muestra como 404 en vez de ocultarse con una redirección */}
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>

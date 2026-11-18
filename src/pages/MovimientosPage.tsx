@@ -34,7 +34,6 @@ export const MovimientosPage: React.FC = () => {
 
       {error && <AlertaError mensaje={error} onReintentar={recargar} />}
 
-      {/* Filtros */}
       <div className="card shadow-sm border-0 mb-4">
         <div className="card-body">
           <div className="row g-3">
@@ -67,7 +66,6 @@ export const MovimientosPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Tabla de movimientos */}
       <div className="card shadow-sm border-0">
         <div className="card-body p-0">
           {cargando ? (

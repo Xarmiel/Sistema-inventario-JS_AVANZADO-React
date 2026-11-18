@@ -70,7 +70,7 @@ export const MovimientoFormPage: React.FC = () => {
           fecha: fechaActual,
           motivo: motivo.trim() || `Movimiento manual de ${tipo.toLowerCase()}`
         },
-        true // Aplica la deducción o adición en el stock del producto
+        true
       );
 
       navigate('/movimientos');
@@ -118,7 +118,6 @@ export const MovimientoFormPage: React.FC = () => {
               </div>
             ) : (
               <form onSubmit={handleSubmit} noValidate>
-                {/* Selección del producto */}
                 <div className="mb-3">
                   <label className="form-label fw-semibold">
                     Producto <span className="text-danger">*</span>
@@ -142,7 +141,6 @@ export const MovimientoFormPage: React.FC = () => {
                   )}
                 </div>
 
-                {/* Tipo de movimiento */}
                 <div className="mb-3">
                   <label className="form-label fw-semibold">
                     Tipo de Movimiento <span className="text-danger">*</span>
@@ -179,7 +177,6 @@ export const MovimientoFormPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Cantidad */}
                 <div className="mb-3">
                   <label className="form-label fw-semibold">
                     Cantidad <span className="text-danger">*</span>
@@ -196,7 +193,6 @@ export const MovimientoFormPage: React.FC = () => {
                   />
                 </div>
 
-                {/* Motivo o justificación */}
                 <div className="mb-4">
                   <label className="form-label fw-semibold">Motivo / Observación (Opcional)</label>
                   <input

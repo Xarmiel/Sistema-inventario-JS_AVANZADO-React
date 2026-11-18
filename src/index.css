@@ -1,8 +1,6 @@
-/* Estilos personalizados complementarios a Bootstrap */
 body {
   margin: 0;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  /* Variables de Bootstrap: cambian solas con data-bs-theme (claro/oscuro) */
   background-color: var(--bs-tertiary-bg);
   -webkit-font-smoothing: antialiased;
 }

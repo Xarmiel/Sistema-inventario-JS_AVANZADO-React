@@ -1,4 +1,3 @@
-// Recurso asíncrono para anuncios / políticas de inventario cargadas fuera del componente
 export interface PoliticaInventario {
   titulo: string;
   detalle: string;

@@ -75,7 +75,6 @@ export const ProductoFormPage: React.FC = () => {
           precio: precioNum
         });
 
-        // Registrar movimiento automático si hubo alteración directa del stock
         const diferenciaStock = stockNum - stockOriginal;
         if (diferenciaStock !== 0) {
           await registrarMovimiento(
@@ -87,11 +86,10 @@ export const ProductoFormPage: React.FC = () => {
               fecha: fechaActual,
               motivo: `Ajuste automático por edición de producto (${diferenciaStock > 0 ? '+' : ''}${diferenciaStock} uds)`
             },
-            false // No actualizar stock de nuevo porque ya fue actualizado arriba
+            false
           );
         }
       } else {
-        // Modo Creación
         const nuevoProd = await crearProducto({
           nombre: nombre.trim(),
           categoria: categoria.trim(),
@@ -99,7 +97,6 @@ export const ProductoFormPage: React.FC = () => {
           precio: precioNum
         });
 
-        // Registrar movimiento automático de entrada inicial si el stock es mayor a 0
         if (stockNum > 0) {
           await registrarMovimiento(
             {
@@ -110,7 +107,7 @@ export const ProductoFormPage: React.FC = () => {
               fecha: fechaActual,
               motivo: 'Registro inicial de producto (Automático)'
             },
-            false // Ya el producto se guardó con su stock
+            false
           );
         }
       }
