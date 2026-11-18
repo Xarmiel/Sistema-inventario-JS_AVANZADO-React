@@ -1,33 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Movimiento } from '../types/Movimiento';
 import { getMovimientos } from '../services/movimientoService';
+import { useDatos } from '../hooks/useDatos';
+import { Cargando } from '../components/Cargando';
+import { AlertaError } from '../components/AlertaError';
+import { TipoMovimientoBadge } from '../components/TipoMovimientoBadge';
 
 export const MovimientosPage: React.FC = () => {
-  const [movimientos, setMovimientos] = useState<Movimiento[]>([]);
-  const [cargando, setCargando] = useState<boolean>(true);
+  const { datos: movimientos, cargando, error, recargar } = useDatos<Movimiento[]>(getMovimientos, []);
   const [filtroTipo, setFiltroTipo] = useState<string>('TODOS');
   const [filtroTexto, setFiltroTexto] = useState<string>('');
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const cargar = async () => {
-      try {
-        setCargando(true);
-        const data = await getMovimientos();
-        setMovimientos(data);
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError('Error al cargar el historial de movimientos');
-        }
-      } finally {
-        setCargando(false);
-      }
-    };
-    cargar();
-  }, []);
 
   const movimientosFiltrados = movimientos.filter(m => {
     const coincideTipo = filtroTipo === 'TODOS' || m.tipo === filtroTipo;
@@ -49,12 +32,7 @@ export const MovimientosPage: React.FC = () => {
         </Link>
       </div>
 
-      {error && (
-        <div className="alert alert-danger" role="alert">
-          <i className="bi bi-exclamation-triangle-fill me-2"></i>
-          {error}
-        </div>
-      )}
+      {error && <AlertaError mensaje={error} onReintentar={recargar} />}
 
       {/* Filtros */}
       <div className="card shadow-sm border-0 mb-4">
@@ -62,7 +40,7 @@ export const MovimientosPage: React.FC = () => {
           <div className="row g-3">
             <div className="col-md-8">
               <div className="input-group">
-                <span className="input-group-text bg-light border-end-0">
+                <span className="input-group-text bg-body-tertiary border-end-0">
                   <i className="bi bi-search text-muted"></i>
                 </span>
                 <input
@@ -93,11 +71,8 @@ export const MovimientosPage: React.FC = () => {
       <div className="card shadow-sm border-0">
         <div className="card-body p-0">
           {cargando ? (
-            <div className="text-center py-5">
-              <div className="spinner-border text-primary" role="status"></div>
-              <p className="mt-2 text-muted">Cargando movimientos...</p>
-            </div>
-          ) : movimientosFiltrados.length === 0 ? (
+            <Cargando mensaje="Cargando movimientos..." />
+          ) :movimientosFiltrados.length === 0 ? (
             <div className="text-center py-5">
               <i className="bi bi-inbox fs-1 text-muted"></i>
               <p className="mt-2 text-muted">No se registraron movimientos con ese criterio.</p>
@@ -105,7 +80,7 @@ export const MovimientosPage: React.FC = () => {
           ) : (
             <div className="table-responsive">
               <table className="table table-hover align-middle mb-0">
-                <thead className="table-light">
+                <thead className="table-group-divider">
                   <tr>
                     <th scope="col" style={{ width: '80px' }}>ID</th>
                     <th scope="col">Tipo</th>
@@ -120,18 +95,10 @@ export const MovimientosPage: React.FC = () => {
                     <tr key={m.id}>
                       <td className="fw-bold text-muted">#{m.id}</td>
                       <td>
-                        {m.tipo === 'ENTRADA' ? (
-                          <span className="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
-                            <i className="bi bi-arrow-down-left me-1"></i> ENTRADA
-                          </span>
-                        ) : (
-                          <span className="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1">
-                            <i className="bi bi-arrow-up-right me-1"></i> SALIDA
-                          </span>
-                        )}
+                        <TipoMovimientoBadge tipo={m.tipo} />
                       </td>
                       <td>
-                        <span className="fw-semibold text-dark">{m.productoNombre}</span>
+                        <span className="fw-semibold text-body">{m.productoNombre}</span>
                         <span className="text-muted small ms-2">(ID: {m.productoId})</span>
                       </td>
                       <td>

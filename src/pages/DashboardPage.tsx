@@ -1,35 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import type { Producto } from '../types/Producto';
 import type { Movimiento } from '../types/Movimiento';
 import { getProductos } from '../services/productoService';
 import { getMovimientos } from '../services/movimientoService';
 import { PoliticasSection } from '../components/PoliticasSection';
+import { useDatos } from '../hooks/useDatos';
+import { Cargando } from '../components/Cargando';
+import { AlertaError } from '../components/AlertaError';
+import { TipoMovimientoBadge } from '../components/TipoMovimientoBadge';
 
 export const DashboardPage: React.FC = () => {
-  const [productos, setProductos] = useState<Producto[]>([]);
-  const [movimientos, setMovimientos] = useState<Movimiento[]>([]);
-  const [cargando, setCargando] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [prods, movs] = await Promise.all([getProductos(), getMovimientos()]);
-        setProductos(prods);
-        setMovimientos(movs);
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError('Error de conexión con la base de datos');
-        }
-      } finally {
-        setCargando(false);
-      }
-    };
-    fetchData();
-  }, []);
+  const prods = useDatos<Producto[]>(getProductos, []);
+  const movs = useDatos<Movimiento[]>(getMovimientos, []);
+  const productos = prods.datos;
+  const movimientos = movs.datos;
+  const cargando = prods.cargando || movs.cargando;
+  const error = prods.error || movs.error;
+  const reintentar = () => {
+    prods.recargar();
+    movs.recargar();
+  };
 
   const totalProductos = productos.length;
   const totalStock = productos.reduce((acc, p) => acc + Number(p.stock), 0);
@@ -37,21 +28,11 @@ export const DashboardPage: React.FC = () => {
   const productosBajoStock = productos.filter(p => Number(p.stock) <= 5);
 
   if (cargando) {
-    return (
-      <div className="text-center py-5">
-        <div className="spinner-border text-primary" role="status"></div>
-        <p className="mt-2 text-muted">Cargando métricas del inventario...</p>
-      </div>
-    );
+    return <Cargando mensaje="Cargando métricas del inventario..." />;
   }
 
   if (error) {
-    return (
-      <div className="alert alert-danger my-4" role="alert">
-        <i className="bi bi-exclamation-triangle-fill me-2"></i>
-        {error}
-      </div>
-    );
+    return <AlertaError mensaje={error} onReintentar={reintentar} />;
   }
 
   return (
@@ -65,7 +46,7 @@ export const DashboardPage: React.FC = () => {
           <Link to="/productos/nuevo" className="btn btn-primary">
             <i className="bi bi-plus-lg me-1"></i> Nuevo Producto
           </Link>
-          <Link to="/movimientos/nuevo" className="btn btn-outline-dark">
+          <Link to="/movimientos/nuevo" className="btn btn-outline-secondary">
             <i className="bi bi-arrow-left-right me-1"></i> Movimiento
           </Link>
         </div>
@@ -130,7 +111,7 @@ export const DashboardPage: React.FC = () => {
             <div className="card-body p-0">
               <div className="table-responsive">
                 <table className="table table-hover align-middle mb-0">
-                  <thead className="table-light">
+                  <thead className="table-group-divider">
                     <tr>
                       <th>Tipo</th>
                       <th>Producto</th>
@@ -142,15 +123,7 @@ export const DashboardPage: React.FC = () => {
                     {movimientos.slice(0, 5).map(m => (
                       <tr key={m.id}>
                         <td>
-                          {m.tipo === 'ENTRADA' ? (
-                            <span className="badge bg-success-subtle text-success border border-success-subtle">
-                              <i className="bi bi-arrow-down-left me-1"></i> Entrada
-                            </span>
-                          ) : (
-                            <span className="badge bg-danger-subtle text-danger border border-danger-subtle">
-                              <i className="bi bi-arrow-up-right me-1"></i> Salida
-                            </span>
-                          )}
+                          <TipoMovimientoBadge tipo={m.tipo} />
                         </td>
                         <td className="fw-medium">{m.productoNombre}</td>
                         <td>{m.cantidad} uds.</td>

@@ -1,11 +1,12 @@
 import React, { Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { DashboardPage } from './pages/DashboardPage';
 import { ProductosPage } from './pages/ProductosPage';
 import { ProductoFormPage } from './pages/ProductoFormPage';
 import { MovimientosPage } from './pages/MovimientosPage';
 import { MovimientoFormPage } from './pages/MovimientoFormPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 import { ThemeProvider } from './context/ThemeContext';
 
 export const App: React.FC = () => {
@@ -29,7 +30,8 @@ export const App: React.FC = () => {
               <Route path="/productos/editar/:id" element={<ProductoFormPage />} />
               <Route path="/movimientos" element={<MovimientosPage />} />
               <Route path="/movimientos/nuevo" element={<MovimientoFormPage />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
+              {/* S15: una ruta rota se muestra como 404 en vez de ocultarse con una redirección */}
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
         </main>

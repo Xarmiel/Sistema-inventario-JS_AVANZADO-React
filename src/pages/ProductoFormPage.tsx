@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
+import { Cargando } from '../components/Cargando';
 import { crearProducto, getProductoById, actualizarProducto } from '../services/productoService';
 import { registrarMovimiento } from '../services/movimientoService';
 
@@ -127,19 +128,14 @@ export const ProductoFormPage: React.FC = () => {
   };
 
   if (cargando) {
-    return (
-      <div className="text-center py-5">
-        <div className="spinner-border text-primary" role="status"></div>
-        <p className="mt-2 text-muted">Cargando datos del producto...</p>
-      </div>
-    );
+    return <Cargando mensaje="Cargando datos del producto..." />;
   }
 
   return (
     <div className="row justify-content-center">
       <div className="col-12 col-md-8 col-lg-6">
         <div className="card shadow-sm border-0">
-          <div className="card-header bg-white py-3">
+          <div className="card-header bg-body py-3">
             <h4 className="fw-bold mb-0">
               <i className={`bi ${isEdicion ? 'bi-pencil-square text-primary' : 'bi-plus-circle-fill text-success'} me-2`}></i>
               {isEdicion ? `Editar Producto #${id}` : 'Registrar Nuevo Producto'}
