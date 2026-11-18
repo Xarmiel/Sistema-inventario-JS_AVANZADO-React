@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { Cargando } from '../components/Cargando';
 import type { Producto } from '../types/Producto';
 import type { TipoMovimiento } from '../types/Movimiento';
 import { getProductos } from '../services/productoService';
@@ -85,19 +86,14 @@ export const MovimientoFormPage: React.FC = () => {
   };
 
   if (cargando) {
-    return (
-      <div className="text-center py-5">
-        <div className="spinner-border text-primary" role="status"></div>
-        <p className="mt-2 text-muted">Cargando productos...</p>
-      </div>
-    );
+    return <Cargando mensaje="Cargando productos..." />;
   }
 
   return (
     <div className="row justify-content-center">
       <div className="col-12 col-md-8 col-lg-6">
         <div className="card shadow-sm border-0">
-          <div className="card-header bg-white py-3">
+          <div className="card-header bg-body py-3">
             <h4 className="fw-bold mb-0">
               <i className="bi bi-arrow-left-right text-warning me-2"></i>
               Registrar Movimiento Manual
@@ -141,7 +137,7 @@ export const MovimientoFormPage: React.FC = () => {
                   </select>
                   {productoActual && (
                     <div className="form-text">
-                      Stock disponible: <strong className="text-dark">{productoActual.stock} unidades</strong>
+                      Stock disponible: <strong className="text-body">{productoActual.stock} unidades</strong>
                     </div>
                   )}
                 </div>

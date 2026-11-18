@@ -1,38 +1,21 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import type { Producto } from '../types/Producto';
 import { getProductos, eliminarProducto } from '../services/productoService';
 import { StockBadge } from '../components/StockBadge';
+import { useDatos } from '../hooks/useDatos';
+import { Cargando } from '../components/Cargando';
+import { AlertaError } from '../components/AlertaError';
 
 export const ProductosPage: React.FC = () => {
-  const [productos, setProductos] = useState<Producto[]>([]);
-  const [cargando, setCargando] = useState<boolean>(true);
+  const { datos: productos, setDatos: setProductos, cargando, error, recargar } =
+    useDatos<Producto[]>(getProductos, []);
   const [filtroTexto, setFiltroTexto] = useState<string>('');
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string>('TODAS');
   const [mensaje, setMensaje] = useState<{ tipo: 'success' | 'danger'; texto: string } | null>(null);
 
   // useRef para manipular el foco del buscador directamente sin re-render (Semana 13)
   const searchInputRef = useRef<HTMLInputElement>(null);
-
-  const cargarProductos = async () => {
-    try {
-      setCargando(true);
-      const data = await getProductos();
-      setProductos(data);
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setMensaje({ tipo: 'danger', texto: err.message });
-      } else {
-        setMensaje({ tipo: 'danger', texto: 'Error al conectar con la base de datos' });
-      }
-    } finally {
-      setCargando(false);
-    }
-  };
-
-  useEffect(() => {
-    cargarProductos();
-  }, []);
 
   const handleFocusSearch = () => {
     searchInputRef.current?.focus();
@@ -95,6 +78,8 @@ export const ProductosPage: React.FC = () => {
         </div>
       </div>
 
+      {error && <AlertaError mensaje={error} onReintentar={recargar} />}
+
       {mensaje && (
         <div className={`alert alert-${mensaje.tipo} alert-dismissible fade show`} role="alert">
           {mensaje.texto}
@@ -108,7 +93,7 @@ export const ProductosPage: React.FC = () => {
           <div className="row g-3 align-items-center">
             <div className="col-md-7">
               <div className="input-group">
-                <span className="input-group-text bg-light border-end-0">
+                <span className="input-group-text bg-body-tertiary border-end-0">
                   <i className="bi bi-search text-muted"></i>
                 </span>
                 <input
@@ -164,11 +149,8 @@ export const ProductosPage: React.FC = () => {
       <div className="card shadow-sm border-0">
         <div className="card-body p-0">
           {cargando ? (
-            <div className="text-center py-5">
-              <div className="spinner-border text-primary" role="status"></div>
-              <p className="mt-2 text-muted">Cargando catálogo con Axios...</p>
-            </div>
-          ) : productosFiltrados.length === 0 ? (
+            <Cargando mensaje="Cargando catálogo con Axios..." />
+          ) :productosFiltrados.length === 0 ? (
             <div className="text-center py-5">
               <i className="bi bi-box-seam fs-1 text-muted"></i>
               <p className="mt-2 text-muted">No se encontraron productos registrados.</p>
@@ -176,7 +158,7 @@ export const ProductosPage: React.FC = () => {
           ) : (
             <div className="table-responsive">
               <table className="table table-hover align-middle mb-0">
-                <thead className="table-light">
+                <thead className="table-group-divider">
                   <tr>
                     <th scope="col" style={{ width: '80px' }}>ID</th>
                     <th scope="col">Nombre</th>

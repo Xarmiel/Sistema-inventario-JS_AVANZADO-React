@@ -15,7 +15,7 @@ export const PoliticasPanel: React.FC = () => {
         <div className="row g-2">
           {politicas.map((pol, idx) => (
             <div key={idx} className="col-md-6">
-              <div className="p-2 rounded bg-light border">
+              <div className="p-2 rounded bg-body-tertiary border">
                 <div className="fw-semibold small text-primary">{pol.titulo}</div>
                 <div className="small text-secondary">{pol.detalle}</div>
                 <div className="small text-muted mt-1" style={{ fontSize: '0.75rem' }}>
